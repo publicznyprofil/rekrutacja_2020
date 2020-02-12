@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form>
+        <div style="display: flex; justify-content: center;">
+            <select name="data_source" multiple>
+                {% for option in filters.data_source %}
+                    <option value="{{ option }}">{{ option }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="campaign" multiple>
+                {% for option in filters.campaign %}
+                    <option value="{{ option }}">{{ option }}</option>
+                {% endfor %}
+            </select>
+
+            <button>Filter</button>
+        </div>
+    </form>
+
+    <div style="display: flex; justify-content: center;">
+        <div style="width:50%;">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let chartColors = {
+            red: 'rgb(255, 99, 132)',
+            blue: 'rgb(54, 162, 235)',
+        };
+        let data = {{ data|safe }};
+        let clicks = [];
+        let impressions = [];
+        for (const item of data){
+            clicks.push({y: item['total_clicks'], x: item['date']});
+            impressions.push({y: item['total_impressions'], x: item['date']});
+        }
+        let lineChartData = {
+            datasets: [
+                {
+                    label: 'Clicks',
+                    borderColor: chartColors.red,
+                    backgroundColor: chartColors.red,
+                    fill: false,
+                    data: clicks,
+                    yAxisID: 'y-axis-1',
+                },
+                {
+                    label: 'Impressions',
+                    borderColor: chartColors.blue,
+                    backgroundColor: chartColors.blue,
+                    fill: false,
+                    data: impressions,
+                    yAxisID: 'y-axis-2'
+                }
+            ]
+        };
+
+        window.onload = function () {
+            let ctx = document.getElementById('canvas').getContext('2d');
+            window.myLine = Chart.Line(ctx, {
+                data: lineChartData,
+                options: {
+                    responsive: true,
+                    hoverMode: 'index',
+                    stacked: false,
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            position: 'bottom',
+                            time: {
+                                displayFormats: {'week': 'DD MMM'},
+                                tooltipFormat: 'DD/MM/YY',
+                                unit: 'week',
+                            }
+                        }],
+                        yAxes: [
+                            {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                id: 'y-axis-1',
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'clicks'
+                                }
+                            },
+                            {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                id: 'y-axis-2',
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'impressions'
+                                },
+                                gridLines: {
+                                    drawOnChartArea: false, // only want the grid lines for one axis to show up
+                                },
+                            }
+                        ],
+                    }
+				}
+			});
+		};
+    </script>
+{% endblock content %}
