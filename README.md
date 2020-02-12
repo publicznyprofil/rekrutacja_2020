@@ -22,3 +22,6 @@ Tested on **Python 3.5 - Django 2.2.10**
 
 # How it looks in main page #
 ![Examle image](https://i.imgur.com/B8JxplJ.png)
+
+# How json respone look like #
+  `[{"total_clicks": 5, "date": "2020-02-11", "total_impressions": 3}]`
