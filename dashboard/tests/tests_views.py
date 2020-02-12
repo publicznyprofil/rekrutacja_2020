@@ -79,3 +79,23 @@ class DashboardViewTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(json.loads(response.context['data'])), 0)
+
+
+class DashboardJsonViewTest(TestCase):
+    url = reverse('dashboard:dashboard_json')
+
+    def test_get(self):
+        AdvertisingData.objects.create(
+            date=yesterday,
+            clicks=5, impressions=3,
+            data_source='GoogleAdsense',
+            campaign='Campaign Name',
+        )
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf-8'),
+            [{"total_clicks": 5, "date": "2020-02-11", "total_impressions": 3}]
+        )

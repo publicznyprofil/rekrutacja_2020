@@ -1,6 +1,7 @@
 import json
 
 from django.core.serializers.json import DjangoJSONEncoder
+from django.http import JsonResponse
 from django.views.generic import TemplateView
 
 from dashboard.models import AdvertisingData
@@ -34,3 +35,11 @@ class DashboardView(TemplateView):
                 kwargs = {'{}__in'.format(filter_name): filters}
                 queryset = queryset.filter(**kwargs)
         return queryset
+
+
+class DashboardJsonView(DashboardView):
+    def get(self, request, *args, **kwargs):
+        return JsonResponse(
+            data=list(self.get_filtered_queryset().transform_for_chart()),
+            safe=False
+        )

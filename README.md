@@ -2,7 +2,7 @@ Tested on **Python 3.5 - Django 2.2.10**
 
 * I assumed that data in csv will be imported once and the data is always correct.
 * I didn't configure project as usually (one settings, templates in common directory). Normally I would use a little different directories structure.
-* Wasn't specified if it should be json response or normally view so i used normally view, but that wouldn't be big change.
+* I added normal view for tests purpose.
 * Would use some third app to factory data but without it it will be easier to tests.
 * Wasn't specified if I should write code that download csv from web so i added it to repository.
 
